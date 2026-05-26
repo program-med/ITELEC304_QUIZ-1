@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Info</title>
+    <style>
+        :root{
+            --bg:#f5f7fb;
+            --card:#ffffff;
+            --muted:#6b7280;
+            --primary:#1f6feb;
+            --accent:#0ea5a4;
+            --danger:#ef4444;
+            --radius:12px;
+            --glass: rgba(255,255,255,0.6);
+            --shadow: 0 8px 30px rgba(30,41,59,0.08);
+            --max-width:980px;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+        html,body{height:100%;margin:0}
+        body{
+            background: linear-gradient(180deg,var(--bg),#eef2f6);
+            color:#0f172a;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:32px;
+        }
+        .container{
+            width:100%;
+            max-width:var(--max-width);
+            margin:0 auto;
+        }
+        .card{
+            background:var(--card);
+            border-radius:var(--radius);
+            box-shadow:var(--shadow);
+            overflow:hidden;
+            display:flex;
+            gap:0;
+        }
+        .sidebar{
+            background:linear-gradient(180deg,var(--primary),#125bd4);
+            color:#fff;
+            padding:28px;
+            min-width:260px;
+            display:flex;
+            flex-direction:column;
+            gap:16px;
+            align-items:flex-start;
+        }
+        .brand{
+            display:flex;align-items:center;gap:12px;font-weight:600;font-size:18px
+        }
+        .brand svg{width:36px;height:36px}
+        .main{
+            padding:28px 32px;
+            flex:1;
+        }
+        .title-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+        h1{margin:0;font-size:20px;color:#0f172a}
+        p.lead{margin:6px 0 0;color:var(--muted)}
+        .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
+        .info{
+            background:linear-gradient(180deg,rgba(15,23,42,0.02),rgba(15,23,42,0.01));
+            padding:14px;border-radius:10px;border:1px solid rgba(15,23,42,0.04);
+        }
+        .label{font-size:12px;color:var(--muted);margin-bottom:6px}
+        .value{font-weight:600;color:#0f172a}
+        .balance{font-size:24px;color:var(--accent)}
+        .status-badge{display:inline-block;padding:6px 10px;border-radius:999px;font-weight:600;font-size:12px}
+        .status-active{background:#ecfeff;color:#0c4b42}
+        .status-empty{background:#fff1f2;color:var(--danger)}
+        .actions{display:flex;gap:12px;margin-top:20px}
+        .btn{padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+        .btn-primary{background:var(--primary);color:#fff}
+        .btn-outline{background:transparent;border:1px solid rgba(15,23,42,0.06)}
+        .note{margin-top:14px;font-size:13px;color:var(--muted)}
+        .empty-msg{color:var(--danger);font-style:italic}
+        @media (max-width:740px){
+            .card{flex-direction:column}
+            .sidebar{min-width:unset;flex-direction:row;align-items:center;justify-content:space-between;padding:18px}
+            .grid{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <aside class="sidebar">
+                <div class="brand">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="6" fill="white" opacity="0.06"/><path d="M6 10V7a2 2 0 0 1 2-2h8v5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 14v3a2 2 0 0 0 2 2h8v-5" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    MyBank
+                </div>
+                <div>
+                    <div style="font-size:13px;opacity:0.95">Customer Portal</div>
+                    <div style="font-size:12px;opacity:0.8;margin-top:6px">Secure · Reliable · 24/7</div>
+                </div>
+                <div style="margin-top:auto;font-size:12px;opacity:0.85">Account overview</div>
+            </aside>
+            <main class="main">
+                <div class="title-row">
+                    <div>
+                        <h1>Banking Account Information</h1>
+                        <p class="lead">Overview of your account and recent status</p>
+                    </div>
+                    <div style="text-align:right">
+                        {% if account %}
+                            <div class="status-badge status-active">Active</div>
+                        {% else %}
+                            <div class="status-badge status-empty">No Account</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if account %}
+                    <div class="grid">
+                        <div class="info">
+                            <div class="label">Account Holder</div>
+                            <div class="value">{{ account.name }}</div>
+                        </div>
+                        <div class="info">
+                            <div class="label">Account Balance</div>
+                            <div class="value balance">${{ account.get_balance|floatformat:2 }}</div>
+                        </div>
+                        <div class="info">
+                            <div class="label">Account Summary</div>
+                            <div class="value">{{ account.display_info }}</div>
+                        </div>
+                        <div class="info">
+                            <div class="label">Account ID</div>
+                            <div class="value">{{ account.id }}</div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn btn-primary">Make Transfer</button>
+                        <button class="btn btn-outline">View Statement</button>
+                        <button class="btn btn-outline">Deposit / Withdraw</button>
+                    </div>
+
+                    <div class="note">Tip: Use the admin panel to manage accounts or call support for help.</div>
+                {% else %}
+                    <p class="empty-msg">No account found. Please create one via the Django admin or shell.</p>
+                {% endif %}
+            </main>
+        </div>
+    </div>
+</body>
+</html>
